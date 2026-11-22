@@ -798,45 +798,122 @@ const exportAdditionalDoAnGvm = async (req, res) => {
 };
 
 const generateAdditionalFile = async (teacher, tempDir) => {
-  const teacherFolderPath = path.resolve(
+  let teacherFolderPath = path.resolve(
     __dirname,
     "..",
     "..",
     "Giang_Vien_Moi",
-    teacher.MaPhongBan,
-    teacher.MaBoMon,
-    teacher.HoTen
+    teacher.MaPhongBan || "",
+    teacher.MaBoMon || "",
+    teacher.HoTen || ""
   );
+
+  const baseGvmPath = path.resolve(__dirname, "..", "..", "Giang_Vien_Moi");
+
+  // Fallback 1: Nếu đường dẫn chưa tồn tại, tìm trong các thư mục bộ môn con của Khoa
+  if (!fs.existsSync(teacherFolderPath)) {
+    const deptPath = path.join(baseGvmPath, teacher.MaPhongBan || "");
+    if (fs.existsSync(deptPath)) {
+      try {
+        const subDirs = fs.readdirSync(deptPath, { withFileTypes: true });
+        for (const sub of subDirs) {
+          if (sub.isDirectory()) {
+            const candidate = path.join(deptPath, sub.name, teacher.HoTen || "");
+            if (fs.existsSync(candidate)) {
+              teacherFolderPath = candidate;
+              break;
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi khi tìm thư mục bộ môn:", err);
+      }
+    }
+  }
+
+  // Fallback 2: Nếu vẫn chưa thấy, quét trong toàn bộ thư mục Giang_Vien_Moi
+  if (!fs.existsSync(teacherFolderPath) && fs.existsSync(baseGvmPath)) {
+    try {
+      const depts = fs.readdirSync(baseGvmPath, { withFileTypes: true });
+      for (const d of depts) {
+        if (d.isDirectory()) {
+          const candidateDept = path.join(baseGvmPath, d.name);
+          const bms = fs.readdirSync(candidateDept, { withFileTypes: true });
+          for (const bm of bms) {
+            if (bm.isDirectory()) {
+              const candidate = path.join(candidateDept, bm.name, teacher.HoTen || "");
+              if (fs.existsSync(candidate)) {
+                teacherFolderPath = candidate;
+                break;
+              }
+            }
+          }
+        }
+        if (fs.existsSync(teacherFolderPath)) break;
+      }
+    } catch (err) {
+      console.error("Lỗi khi quét Giang_Vien_Moi:", err);
+    }
+  }
 
   if (!fs.existsSync(teacherFolderPath)) return null; // Không có thư mục
 
-  const files = fs.readdirSync(teacherFolderPath);
-  const allowedExtensions = process.env.ALLOWED_FILE_EXTENSIONS.split(",").map(
-    (ext) => ext.toLowerCase()
-  );
+  let files;
+  try {
+    files = fs.readdirSync(teacherFolderPath);
+  } catch (e) {
+    return null;
+  }
 
-  // const documentFile = files.find((f) =>
-  //   allowedExtensions.some((ext) => f.toLowerCase().endsWith("." + ext))
-  // );
+  const allowedExtensions = (process.env.ALLOWED_FILE_EXTENSIONS || "jpg,jpeg,png,pdf,doc,docx")
+    .split(",")
+    .map((ext) => ext.trim().toLowerCase());
 
-  const documentFile = files.find((f) => {
-    const baseName = path.parse(f).name; // Lấy tên file không có phần mở rộng
-    const ext = path.extname(f).toLowerCase().slice(1); // Lấy phần mở rộng không có dấu chấm
+  // 1. Ưu tiên tìm file theo tên: [MaPhongBan]_[HoTen].[ext]
+  let documentFile = files.find((f) => {
+    const baseName = path.parse(f).name;
+    const ext = path.extname(f).toLowerCase().slice(1);
     return (
       baseName === `${teacher.MaPhongBan}_${teacher.HoTen}` &&
       allowedExtensions.includes(ext)
     );
   });
 
+  // 2. Ưu tiên thứ hai: tìm file có chứa "fileBoSung" hoặc bắt đầu bằng "BoSung"
+  if (!documentFile) {
+    documentFile = files.find((f) => {
+      const baseName = path.parse(f).name.toLowerCase();
+      const ext = path.extname(f).toLowerCase().slice(1);
+      return (
+        (baseName.includes("filebosung") || baseName.includes("bosung")) &&
+        allowedExtensions.includes(ext)
+      );
+    });
+  }
+
+  // 3. Ưu tiên thứ ba: tìm file lý lịch hoặc bằng tốt nghiệp
+  if (!documentFile) {
+    documentFile = files.find((f) => {
+      const baseName = path.parse(f).name.toLowerCase();
+      const ext = path.extname(f).toLowerCase().slice(1);
+      return (
+        (baseName.includes("lylich") || baseName.includes("bangtotnghiep")) &&
+        allowedExtensions.includes(ext)
+      );
+    });
+  }
+
+  // 4. Fallback cuối cùng: lấy bất kỳ file nào có định dạng được cho phép trong thư mục
+  if (!documentFile) {
+    documentFile = files.find((f) => {
+      const ext = path.extname(f).toLowerCase().slice(1);
+      return allowedExtensions.includes(ext);
+    });
+  }
+
   if (!documentFile) return null; // Không tìm thấy file hợp lệ
 
   const oldFilePath = path.join(teacherFolderPath, documentFile);
-  // const newFileName = `BoSung_${teacher.HoTen}${path.extname(documentFile)}`;
-  // const newFilePath = path.join(teacherFolderPath, newFileName);
-
-  // // Đổi tên file
-  // fs.renameSync(oldFilePath, newFilePath);
-
   return oldFilePath;
 };
 

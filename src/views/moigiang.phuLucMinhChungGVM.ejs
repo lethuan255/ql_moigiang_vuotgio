@@ -164,7 +164,7 @@
             />
 
             <button type="button" class="btn mx-2" id="exportButton">
-              <i class="fas fa-file-export me-2"></i>Xuất Hợp Đồng
+              <i class="fas fa-file-export me-2"></i>Xuất Minh Chứng
             </button>
           </div>
         </div>
@@ -194,7 +194,11 @@
           const dot = document.getElementById("combobox-dot").value;
           const ki = document.getElementById("comboboxki").value;
           const namHoc = document.getElementById("NamHoc").value;
-          const khoa = document.getElementById("MaPhongBan").value;
+          let khoa = document.getElementById("MaPhongBan").value;
+          const isKhoa = localStorage.getItem("isKhoa");
+          if (!khoa && isKhoa == 1) {
+            khoa = localStorage.getItem("MaPhongBan") || "";
+          }
           const teacherName = document.getElementById("search-teacher").value;
           const loaiHopDong = document.getElementById("loaiHopDong").value;
 
@@ -299,68 +303,36 @@
 
     <script>
       $(document).ready(function () {
-        // Xóa tùy chọn rỗng nếu có
-        $('#NamHoc option[value=""]').remove();
+        $("#NamHoc").empty();
+        $("#comboboxki").empty();
+        $("#combobox-dot").empty();
 
         $.ajax({
           url: "/getNamHoc",
           method: "GET",
           success: function (response) {
             if (response.success) {
-              const namHocList = response.NamHoc; // Giả sử NamHoc là một mảng
-              console.log(namHocList);
-
-              // Xóa tất cả các tùy chọn hiện có để tránh trùng lặp
               $("#NamHoc").empty();
+              $("#comboboxki").empty();
+              $("#combobox-dot").empty();
 
-              // Thêm các tùy chọn từ dữ liệu trả về
-              namHocList.forEach(function (item) {
-                $("#NamHoc").append(
-                  `<option value="${item.NamHoc}">${item.NamHoc}</option>`
-                );
-              });
-
-              // Kiểm tra và thêm tùy chọn mặc định nếu không có tùy chọn nào được chọn
-              if ($("#NamHoc option:selected").length === 0) {
-                $("#NamHoc").prepend('<option value="">Chọn Năm Học</option>');
-              }
-            } else {
-              console.error("Không thể lấy năm học:", response.message);
-            }
-          },
-          error: function (xhr, status, error) {
-            console.error("Lỗi khi gọi API:", error);
-          },
-        });
-      });
-    </script>
-
-    <script>
-      $(document).ready(function () {
-        $('#NamHoc option[value=""]').remove();
-        $('#comboboxki option[value=""]').remove();
-        $('#combobox-dot option[value=""]').remove();
-
-        $.ajax({
-          url: "/getNamHoc",
-          method: "GET",
-          success: function (response) {
-            if (response.success) {
               response.NamHoc.forEach(function (item) {
-                console.log(item.NamHoc);
                 $("#NamHoc").append(
                   `<option value="${item.NamHoc}">${item.NamHoc}</option>`
                 );
               });
+
+              // Tự động chọn năm học đầu tiên nếu có
+              if (response.NamHoc.length > 0) {
+                $("#NamHoc").val(response.NamHoc[0].NamHoc);
+              }
 
               response.Ki.forEach(function (item) {
-                console.log(item.Ki);
                 $("#comboboxki").append(
                   `<option value="${item.value}">${item.Ki}</option>`
                 );
               });
               response.Dot.forEach(function (item) {
-                console.log(item.Dot);
                 $("#combobox-dot").append(
                   `<option value="${item.value}">${item.Dot}</option>`
                 );
