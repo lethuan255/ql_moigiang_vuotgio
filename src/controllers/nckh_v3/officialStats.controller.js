@@ -5,3 +5,5 @@ const renderPage = (_req, res) => {
 };
 
 module.exports = { renderPage };
+
+// test
