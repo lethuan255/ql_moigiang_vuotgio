@@ -160,13 +160,14 @@
     .vg-toolbar {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-bottom: none;
-      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      border-radius: var(--radius-md);
       padding: 12px 16px;
+      margin-bottom: 20px;
       display: flex;
       align-items: center;
       gap: 10px;
       flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
     }
 
     .vg-toolbar select {
@@ -456,8 +457,10 @@
     .chart-section {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-bottom: none;
+      border-radius: var(--radius-md);
       padding: 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
     }
 
     .chart-section-inner {
@@ -517,7 +520,7 @@
     .table-wrapper {
       background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 0 0 var(--radius-md) var(--radius-md);
+      border-radius: var(--radius-md);
       overflow-x: auto;
       box-shadow: var(--shadow-sm);
     }
@@ -689,6 +692,43 @@
       </button>
     </nav>
 
+    <!-- Toolbar -->
+    <div id="academyToolbar" class="vg-toolbar">
+      <select id="namHocXem"></select>
+      <button id="loadDataBtn" class="btn-primary-vg">
+        <i class="fas fa-sync-alt"></i> Hiển thị
+      </button>
+
+      <div id="lecturerSearchToolbar" class="lecturer-search-toolbar" hidden>
+        <div>
+          <div class="lecturer-autocomplete">
+            <input
+              id="lecturerStatisticsSearch"
+              type="text"
+              autocomplete="off"
+              placeholder="Nhập tên để tìm..."
+              aria-label="Tìm giảng viên để xem bảng kê"
+            />
+            <div id="lecturerStatisticsSuggestions" class="lecturer-suggestions"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toolbar-divider"></div>
+
+      <div class="tab-toggle">
+        <button id="tabAll" class="active" onclick="switchTab('all')">
+          <i class="fas fa-table me-1"></i>Đầy đủ
+        </button>
+        <button id="tabCompact" onclick="switchTab('compact')">
+          <i class="fas fa-compress me-1"></i>Gọn
+        </button>
+      </div>
+
+      <div class="toolbar-spacer"></div>
+      <span class="toolbar-info" id="toolbarInfo">Chọn năm học để tải dữ liệu</span>
+    </div>
+
     <!-- KPI Cards -->
     <div id="academyKpi" class="kpi-grid statistics-academy-content">
       <div class="kpi-card blue">
@@ -767,43 +807,6 @@
           <canvas id="stackedChart" role="img" aria-label="Biểu đồ cột chồng phân tích chi tiết giờ theo từng khoa">Dữ liệu đang tải...</canvas>
         </div>
       </div>
-    </div>
-
-    <!-- Toolbar -->
-    <div id="academyToolbar" class="vg-toolbar">
-      <select id="namHocXem"></select>
-      <button id="loadDataBtn" class="btn-primary-vg">
-        <i class="fas fa-sync-alt"></i> Hiển thị
-      </button>
-
-      <div id="lecturerSearchToolbar" class="lecturer-search-toolbar" hidden>
-        <div>
-          <div class="lecturer-autocomplete">
-            <input
-              id="lecturerStatisticsSearch"
-              type="text"
-              autocomplete="off"
-              placeholder="Nhập tên để tìm..."
-              aria-label="Tìm giảng viên để xem bảng kê"
-            />
-            <div id="lecturerStatisticsSuggestions" class="lecturer-suggestions"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="toolbar-divider"></div>
-
-      <div class="tab-toggle">
-        <button id="tabAll" class="active" onclick="switchTab('all')">
-          <i class="fas fa-table me-1"></i>Đầy đủ
-        </button>
-        <button id="tabCompact" onclick="switchTab('compact')">
-          <i class="fas fa-compress me-1"></i>Gọn
-        </button>
-      </div>
-
-      <div class="toolbar-spacer"></div>
-      <span class="toolbar-info" id="toolbarInfo">Chọn năm học để tải dữ liệu</span>
     </div>
 
     <!-- Table -->

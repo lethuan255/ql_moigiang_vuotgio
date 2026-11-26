@@ -254,6 +254,16 @@ async function loadData() {
         });
 
         if (!result.success) {
+            const isUnsavedYearError =
+                response.status === 403 ||
+                /chưa được lưu/i.test(result.message || '');
+            if (isUnsavedYearError) {
+                globalData = [];
+                renderTable([]);
+                updateSummary([]);
+                clearSkeletonRows();
+                return;
+            }
             Swal.fire('Lỗi', result.message || 'Không thể tải dữ liệu', 'error');
             clearSkeletonRows();
             return;
