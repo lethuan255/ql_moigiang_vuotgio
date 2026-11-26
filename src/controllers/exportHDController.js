@@ -2221,46 +2221,122 @@ const generateAppendixContract = async (
 // };
 
 const generateAdditionalFile = async (teacher, tempDir) => {
-  const teacherFolderPath = path.resolve(
+  let teacherFolderPath = path.resolve(
     __dirname,
     "..",
     "..",
     "Giang_Vien_Moi",
-    teacher.MaPhongBan,
-    teacher.MaBoMon,
-    teacher.HoTen
+    teacher.MaPhongBan || "",
+    teacher.MaBoMon || "",
+    teacher.HoTen || ""
   );
+
+  const baseGvmPath = path.resolve(__dirname, "..", "..", "Giang_Vien_Moi");
+
+  // Fallback 1: Nếu đường dẫn chưa tồn tại, tìm trong các thư mục bộ môn con của Khoa
+  if (!fs.existsSync(teacherFolderPath)) {
+    const deptPath = path.join(baseGvmPath, teacher.MaPhongBan || "");
+    if (fs.existsSync(deptPath)) {
+      try {
+        const subDirs = fs.readdirSync(deptPath, { withFileTypes: true });
+        for (const sub of subDirs) {
+          if (sub.isDirectory()) {
+            const candidate = path.join(deptPath, sub.name, teacher.HoTen || "");
+            if (fs.existsSync(candidate)) {
+              teacherFolderPath = candidate;
+              break;
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Lỗi khi tìm thư mục bộ môn:", err);
+      }
+    }
+  }
+
+  // Fallback 2: Nếu vẫn chưa thấy, quét trong toàn bộ thư mục Giang_Vien_Moi
+  if (!fs.existsSync(teacherFolderPath) && fs.existsSync(baseGvmPath)) {
+    try {
+      const depts = fs.readdirSync(baseGvmPath, { withFileTypes: true });
+      for (const d of depts) {
+        if (d.isDirectory()) {
+          const candidateDept = path.join(baseGvmPath, d.name);
+          const bms = fs.readdirSync(candidateDept, { withFileTypes: true });
+          for (const bm of bms) {
+            if (bm.isDirectory()) {
+              const candidate = path.join(candidateDept, bm.name, teacher.HoTen || "");
+              if (fs.existsSync(candidate)) {
+                teacherFolderPath = candidate;
+                break;
+              }
+            }
+          }
+        }
+        if (fs.existsSync(teacherFolderPath)) break;
+      }
+    } catch (err) {
+      console.error("Lỗi khi quét Giang_Vien_Moi:", err);
+    }
+  }
 
   if (!fs.existsSync(teacherFolderPath)) return null; // Không có thư mục
 
-  const files = fs.readdirSync(teacherFolderPath);
-  const allowedExtensions = process.env.ALLOWED_FILE_EXTENSIONS.split(",").map(
-    (ext) => ext.toLowerCase()
-  );
+  let files;
+  try {
+    files = fs.readdirSync(teacherFolderPath);
+  } catch (e) {
+    return null;
+  }
 
-  // const documentFile = files.find((f) =>
-  //   allowedExtensions.some((ext) => f.toLowerCase().endsWith("." + ext))
-  // );
+  const allowedExtensions = (process.env.ALLOWED_FILE_EXTENSIONS || "jpg,jpeg,png,pdf,doc,docx")
+    .split(",")
+    .map((ext) => ext.trim().toLowerCase());
 
-  const documentFile = files.find((f) => {
-    const baseName = path.parse(f).name; // Lấy tên file không có phần mở rộng
-    const ext = path.extname(f).toLowerCase().slice(1); // Lấy phần mở rộng không có dấu chấm
-
+  // 1. Ưu tiên tìm file theo tên: [MaPhongBan]_[HoTen].[ext]
+  let documentFile = files.find((f) => {
+    const baseName = path.parse(f).name;
+    const ext = path.extname(f).toLowerCase().slice(1);
     return (
       baseName === `${teacher.MaPhongBan}_${teacher.HoTen}` &&
       allowedExtensions.includes(ext)
     );
   });
 
+  // 2. Ưu tiên thứ hai: tìm file có chứa "fileBoSung" hoặc bắt đầu bằng "BoSung"
+  if (!documentFile) {
+    documentFile = files.find((f) => {
+      const baseName = path.parse(f).name.toLowerCase();
+      const ext = path.extname(f).toLowerCase().slice(1);
+      return (
+        (baseName.includes("filebosung") || baseName.includes("bosung")) &&
+        allowedExtensions.includes(ext)
+      );
+    });
+  }
+
+  // 3. Ưu tiên thứ ba: tìm file lý lịch hoặc bằng tốt nghiệp
+  if (!documentFile) {
+    documentFile = files.find((f) => {
+      const baseName = path.parse(f).name.toLowerCase();
+      const ext = path.extname(f).toLowerCase().slice(1);
+      return (
+        (baseName.includes("lylich") || baseName.includes("bangtotnghiep")) &&
+        allowedExtensions.includes(ext)
+      );
+    });
+  }
+
+  // 4. Fallback cuối cùng: lấy bất kỳ file nào có định dạng được cho phép trong thư mục
+  if (!documentFile) {
+    documentFile = files.find((f) => {
+      const ext = path.extname(f).toLowerCase().slice(1);
+      return allowedExtensions.includes(ext);
+    });
+  }
+
   if (!documentFile) return null; // Không tìm thấy file hợp lệ
 
   const oldFilePath = path.join(teacherFolderPath, documentFile);
-  // const newFileName = `BoSung_${teacher.HoTen}${path.extname(documentFile)}`;
-  // const newFilePath = path.join(teacherFolderPath, newFileName);
-
-  // Đổi tên file
-  //fs.renameSync(oldFilePath, newFilePath);
-
   return oldFilePath;
 };
 
@@ -2344,7 +2420,7 @@ const exportImageDownloadData = async (req, res) => {
     let { dot, ki, namHoc, khoa, teacherName, loaiHopDong } = req.query;
 
     if (isKhoa == 1) {
-      khoa = req.session.MaPhongBan;
+      khoa = req.session.MaPhongBan || khoa;
     }
 
     if (!dot || !ki || !namHoc) {
@@ -2353,20 +2429,28 @@ const exportImageDownloadData = async (req, res) => {
 
     connection = await createPoolConnection();
 
-    // Convert loaiHopDong from name to ID if it's a string
+    // Convert loaiHopDong from name to ID if it's a string, or lookup both
     let loaiHopDongId = loaiHopDong;
-    if (loaiHopDong && isNaN(loaiHopDong)) {
-      // It's a name, convert to ID
-      const [heDaoTaoRows] = await connection.query(
-        'SELECT id FROM he_dao_tao WHERE he_dao_tao = ?',
-        [loaiHopDong]
-      );
-      if (heDaoTaoRows.length > 0) {
-        loaiHopDongId = heDaoTaoRows[0].id;
-      } else {
-        return res.status(404).send(
-          "<script>alert('Không tìm thấy hệ đào tạo'); window.location.href='/phu-luc-minh-chung-gvm';</script>"
+    let loaiHopDongName = null;
+    if (loaiHopDong) {
+      if (!isNaN(loaiHopDong)) {
+        const [heDaoTaoRows] = await connection.query(
+          'SELECT id, he_dao_tao FROM he_dao_tao WHERE id = ?',
+          [loaiHopDong]
         );
+        if (heDaoTaoRows.length > 0) {
+          loaiHopDongId = heDaoTaoRows[0].id;
+          loaiHopDongName = heDaoTaoRows[0].he_dao_tao;
+        }
+      } else {
+        const [heDaoTaoRows] = await connection.query(
+          'SELECT id, he_dao_tao FROM he_dao_tao WHERE he_dao_tao = ?',
+          [loaiHopDong]
+        );
+        if (heDaoTaoRows.length > 0) {
+          loaiHopDongId = heDaoTaoRows[0].id;
+          loaiHopDongName = heDaoTaoRows[0].he_dao_tao;
+        }
       }
     }
 
@@ -2396,7 +2480,7 @@ const exportImageDownloadData = async (req, res) => {
     hd.MaBoMon,
     hd.NoiCongTac
   FROM hopdonggvmoi hd
-  JOIN gvmoi gv ON hd.id_Gvm = gv.id_Gvm
+  LEFT JOIN gvmoi gv ON (hd.id_Gvm = gv.id_Gvm OR hd.CCCD = gv.CCCD)
 `;
 
     const conditions = [];
@@ -2412,8 +2496,15 @@ const exportImageDownloadData = async (req, res) => {
     conditions.push("hd.NamHoc = ?");
     params.push(namHoc);
 
-    conditions.push("hd.he_dao_tao = ?");
-    params.push(loaiHopDongId);
+    if (loaiHopDong) {
+      if (loaiHopDongName) {
+        conditions.push("(hd.he_dao_tao = ? OR hd.he_dao_tao = ?)");
+        params.push(loaiHopDongId, loaiHopDongName);
+      } else {
+        conditions.push("hd.he_dao_tao = ?");
+        params.push(loaiHopDongId);
+      }
+    }
 
     /* điều kiện theo khoa */
     if (khoa && khoa !== "ALL") {
@@ -2467,39 +2558,42 @@ const exportImageDownloadData = async (req, res) => {
       const fileList = [];
       const missingFiles = [];
 
-
       for (const teacher of teachers) {
         const filePathAdditional = await generateAdditionalFile(
           teacher,
           tempDir
         );
-        if (filePathAdditional) {
-          fileList.push(filePathAdditional);
+        if (filePathAdditional && fs.existsSync(filePathAdditional)) {
+          const ext = path.extname(filePathAdditional);
+          const entryName = `${teacher.MaPhongBan || "KHOA"}_${teacher.HoTen}_BoSung${ext}`;
+          fileList.push({ filePath: filePathAdditional, entryName });
         } else {
           missingFiles.push(teacher.HoTen);
         }
-
       }
 
       if (fileList.length === 0) {
+        let msg = 'Không tìm thấy file minh chứng/tài liệu bổ sung nào trên hệ thống.';
+        if (missingFiles.length > 0) {
+          msg += ` (Các giảng viên chưa có file: ${missingFiles.slice(0, 5).join(', ')}${missingFiles.length > 5 ? '...' : ''})`;
+        }
         return res
           .status(400)
           .send(
-            `<script>alert('Không có tài liệu bổ sung nào.'); window.location.href='/api/moi-giang/hd-gvm/img-download-site';</script>`
+            `<script>alert(${JSON.stringify(msg)}); window.location.href='/api/moi-giang/hd-gvm/img-download-site';</script>`
           );
       }
 
-      const zipPath = path.resolve(__dirname, "TaiLieuBoSung.zip");
+      const zipPath = path.join(tempDir, "TaiLieuBoSung.zip");
       const output = fs.createWriteStream(zipPath);
       const archive = archiver("zip", { zlib: { level: 9 } });
 
       output.on("close", () => {
-
         let fileName = `file_bo_sung_dot${dot}_ki${ki}_${namHoc}`;
 
         if (teacherName) {
           fileName += "_" + teacherName + ".zip";
-        } else if (khoa != "ALL") {
+        } else if (khoa && khoa != "ALL") {
           fileName += "_" + khoa + ".zip";
         } else {
           fileName += "_ALL.zip";
@@ -2513,10 +2607,19 @@ const exportImageDownloadData = async (req, res) => {
         res.download(zipPath, fileName, (err) => {
           if (err) {
             console.error("Lỗi gửi file:", err.message);
-            res.status(500).send("Không thể tải file zip.");
+            if (!res.headersSent) {
+              res.status(500).send("Không thể tải file zip.");
+            }
           }
 
-          fs.unlinkSync(zipPath);
+          // Dọn dẹp thư mục tạm và file zip
+          try {
+            if (fs.existsSync(tempDir)) {
+              fs.rmSync(tempDir, { recursive: true, force: true });
+            }
+          } catch (cleanupErr) {
+            console.error("Lỗi dọn dẹp thư mục tạm:", cleanupErr);
+          }
 
           if (warningMsg) {
             console.warn(warningMsg);
@@ -2524,38 +2627,16 @@ const exportImageDownloadData = async (req, res) => {
         });
       });
 
-
-      // output.on("close", () => {
-
-      //   let fileName = `file_bo_sung_dot${dot}_ki${ki}_${namHoc}`;
-
-      //   if (teacherName) {
-      //     fileName += "_" + teacherName + ".zip";
-      //   } else if (khoa != "ALL") {
-      //     fileName += "_" + khoa + ".zip";
-      //   } else {
-      //     fileName += "_ALL" + ".zip";
-      //   }
-      //   // Gửi file zip về client
-      //   res.download(zipPath, `${fileName}`, (err) => {
-      //     if (err) {
-      //       console.error("Lỗi gửi file:", err.message);
-      //       res.status(500).send("Không thể tải file zip.");
-      //     }
-
-      //     // Xoá file zip sau khi tải nếu muốn
-      //     fs.unlinkSync(zipPath);
-      //   });
-      // });
-
       archive.on("error", (err) => {
         throw err;
       });
 
       archive.pipe(output);
 
-      fileList.forEach((filePath) => {
-        archive.file(filePath, { name: path.basename(filePath) });
+      fileList.forEach((item) => {
+        const fPath = typeof item === "string" ? item : item.filePath;
+        const eName = typeof item === "string" ? path.basename(item) : item.entryName;
+        archive.file(fPath, { name: eName });
       });
 
       await archive.finalize();
@@ -2568,8 +2649,8 @@ const exportImageDownloadData = async (req, res) => {
         );
     }
   } catch (error) {
-    console.error("Error in exportMultipleContracts:", error);
-    res.status(500).send(`Lỗi khi tạo file hợp đồng: ${error.message}`);
+    console.error("Error in exportImageDownloadData:", error);
+    res.status(500).send(`Lỗi khi tải file minh chứng: ${error.message}`);
   } finally {
     if (connection) connection.release(); // Đảm bảo giải phóng kết nối
   }

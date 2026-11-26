@@ -71,66 +71,185 @@
         z-index: 1000;
       }
 
-      .header-actions {
-        display: flex;
-        /* Flexbox container */
-        flex-wrap: wrap;
-        /* Wrap items if they don't fit in one line */
-        align-items: center;
-        /* Vertically center items */
-        gap: 10px;
-        /* Space between the elements */
-        justify-content: space-between;
+      /* ═══════════════════════════════════════════════════════════════
+         Giao diện Toolbar & Controls đồng nhất với Nghiên cứu khoa học
+         ═══════════════════════════════════════════════════════════════ */
+      .qc-page-wrap {
+        padding: 16px 20px;
+        max-width: 100%;
+        margin: 0 auto;
       }
 
-      .right {
-        margin-top: 20px;
+      /* ── Toolbar Card ── */
+      .qc-toolbar-card {
+        background: #f8f9fb;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 12px 16px;
+        margin-bottom: 16px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
       }
 
-      .btn {
-        height: 45px;
-        margin-left: 5px;
+      /* ── Form Select & Input Override ── */
+      .qc-toolbar-card .form-select,
+      .qc-toolbar-card .form-control {
+        height: 38px !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+        color: #344054 !important;
+        background-color: #ffffff !important;
+        border: 1px solid #ced4da !important;
+        border-radius: 6px !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 6px 12px !important;
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+
+      .qc-toolbar-card .form-select:focus,
+      .qc-toolbar-card .form-control:focus {
+        border-color: #0d6efd !important;
+        box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
+        outline: none !important;
+      }
+
+      /* Override styles.css selectors */
+      .qc-toolbar-card #combobox-dot,
+      .qc-toolbar-card #comboboxki,
+      .qc-toolbar-card #NamHoc,
+      .qc-toolbar-card #departmentFilter,
+      .qc-toolbar-card #heDaoTao {
+        color: #344054 !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+      }
+
+      /* ── Button Styles ── */
+      .qc-toolbar-card .btn,
+      .qc-action-btns .btn {
+        height: 38px !important;
+        font-size: 0.875rem !important;
+        font-weight: 500 !important;
+        border-radius: 6px !important;
+        margin: 0 !important;
+        padding: 0 16px !important;
+        line-height: 1.2 !important;
+        transition: all 0.2s ease !important;
+        box-shadow: none !important;
+      }
+
+      .qc-toolbar-card .btn:not([style*="display: none"]):not([style*="display:none"]),
+      .qc-action-btns .btn:not([style*="display: none"]):not([style*="display:none"]) {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 6px !important;
+      }
+
+      .qc-toolbar-card .btn[style*="display: none"],
+      .qc-toolbar-card .btn[style*="display:none"],
+      .qc-action-btns .btn[style*="display: none"],
+      .qc-action-btns .btn[style*="display:none"] {
+        display: none !important;
+      }
+
+      .qc-toolbar-card .btn-primary {
+        background-color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        color: #ffffff !important;
+      }
+      .qc-toolbar-card .btn-primary:hover {
+        background-color: #0b5ed7 !important;
+        border-color: #0a58ca !important;
+        color: #ffffff !important;
+      }
+
+      .qc-toolbar-card .btn-danger {
+        background-color: #dc3545 !important;
+        border-color: #dc3545 !important;
+        color: #ffffff !important;
+      }
+      .qc-toolbar-card .btn-danger:hover {
+        background-color: #bb2d3b !important;
+        border-color: #b02a37 !important;
+        color: #ffffff !important;
+      }
+
+      .qc-toolbar-card .btn-outline-primary,
+      .qc-action-btns .btn-outline-primary {
+        color: #0d6efd !important;
+        border-color: #0d6efd !important;
+        background-color: transparent !important;
+      }
+      .qc-toolbar-card .btn-outline-primary:hover,
+      .qc-action-btns .btn-outline-primary:hover {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+      }
+
+      .qc-toolbar-card .btn-outline-success,
+      .qc-action-btns .btn-outline-success {
+        color: #198754 !important;
+        border-color: #198754 !important;
+        background-color: transparent !important;
+      }
+      .qc-toolbar-card .btn-outline-success:hover,
+      .qc-action-btns .btn-outline-success:hover {
+        background-color: #198754 !important;
+        color: #ffffff !important;
+      }
+
+      /* ── Input group reset styles.css override ── */
+      .qc-toolbar-card .input-group {
+        border: none !important;
+        border-radius: 6px !important;
+      }
+      .qc-toolbar-card .input-group-text {
+        border: 1px solid #ced4da !important;
+        border-right: none !important;
+        background-color: #ffffff !important;
+        color: #6c757d !important;
+        height: 38px !important;
+        border-top-left-radius: 6px !important;
+        border-bottom-left-radius: 6px !important;
+        font-size: 0.875rem !important;
+      }
+      .qc-toolbar-card .input-group .form-control {
+        border-left: none !important;
+        border-top-left-radius: 0 !important;
+        border-bottom-left-radius: 0 !important;
       }
 
       /* cảnh báo khi thiếu dữ liệu */
       .warning-row {
         background-color: #ffe6e6;
-        /* Màu nền cảnh báo nhạt */
         color: #ff0000;
-        /* Màu chữ cảnh báo */
       }
 
-      /* nút xuất file */
-      /* Định dạng cho dropdown */
+      /* nút xuất file dropdown */
       #file-format-menu {
-        top: 800px;
+        position: absolute;
+        top: 100% !important;
+        left: 0 !important;
+        transform: none !important;
         background-color: white;
-        border: 1px solid #ddd;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-        padding: 10px;
-        transform: translateX(255%);
+        border: 1px solid #dee2e6;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        border-radius: 6px;
+        z-index: 1050;
+        padding: 6px 0;
+        min-width: 260px;
       }
 
       .dropdown-item {
-        padding: 8px 12px;
+        padding: 8px 16px;
         cursor: pointer;
+        font-size: 0.875rem;
       }
 
       .dropdown-item:hover {
         background-color: #f8f9fa;
-      }
-
-      .tkb-input {
-        width: 263px;
-        padding: 8px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-
-      .tkb-input-container {
-        margin-left: 5px;
-        margin-bottom: 10px;
+        color: #0d6efd;
       }
     </style>
     <style>
@@ -194,40 +313,75 @@
         text-align: center !important;
       }
 
-      /* css cho phần tổng số tiết */
-      #total-label {
-        margin-top: 10px;
-        margin-left: auto;
-        margin-right: 0;
-        font-family: Arial, sans-serif;
-        font-size: 16px;
-        background-color: #f4f4f4;
-        padding: 10px;
-        border-radius: 8px;
-        width: fit-content;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        display: block;
+      /* Floating Summary Popup Widget */
+      .summary {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 1000;
+        background: rgba(255, 255, 255, 0.95);
+        padding: 12px 18px;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      #total-label label {
-        font-weight: bold;
-        color: #000;
-        margin-right: 8px;
+      .summary.collapsed {
+        transform: translateY(calc(100% + 10px));
+      }
+
+      .summary-toggle {
+        position: absolute;
+        top: -34px;
+        right: 0;
+        width: 36px;
+        height: 34px;
+        background: #1f4ea8;
+        color: white;
+        border: none;
+        border-radius: 8px 0 0 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
-        padding: 5px 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
       }
 
-      #total-label label,
-      #total-label label span {
-        background-color: #007BFF;
-        color: #fff;
+      .summary.collapsed .summary-toggle {
+        transform: translateY(4px);
+        border-radius: 8px 8px 0 0;
+        right: 10px;
+        top: -38px;
       }
 
-      .total-label span {
-        font-weight: bold;
-        color: #333;
+      .summary-box {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        min-width: 220px;
+        padding: 4px 0;
+      }
+
+      .summary-box .label {
+        color: #475569;
+        font-size: 0.86rem;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+      }
+
+      .summary-box .value {
+        color: #0284c7;
+        font-weight: 700;
+        font-size: 1rem;
       }
     </style>
 
@@ -241,72 +395,75 @@
 
     <!-- Phần nội dung -->
 
-    <div class="container-fluid my-4" style="padding-left: 0px">
+    <div class="container-fluid qc-page-wrap my-3">
       <div class="flex-grow-1">
-        <div class="header-actions">
-          <div class="left">
-            <button
-              class="btn"
-              id="them-vao-qc-du-kien"
-              style="margin-bottom: 0px; display: none"
-            >
-              Thêm vào quy chuẩn dự kiến
-            </button>
-          </div>
+        <div class="qc-toolbar-card">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+            <!-- Nút thao tác bên trái nếu có -->
+            <div class="d-flex align-items-center gap-2">
+              <button
+                class="btn btn-outline-primary"
+                id="them-vao-qc-du-kien"
+                style="display: none"
+              >
+                <i class="bi bi-plus-circle me-1"></i>Thêm vào quy chuẩn dự kiến
+              </button>
+            </div>
 
-          <div class="right" style="margin-top: 0px">
-            <div class="loc d-flex align-items-center">
-              <select class="selectop" id="combobox-dot">
+            <!-- Bộ lọc bên phải -->
+            <div class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+              <select class="form-select" id="combobox-dot" style="width: 95px;">
                 <option value="">Đợt</option>
               </select>
 
-              <!-- Combo box kì -->
-              <select class="selectop" id="comboboxki">
+              <select class="form-select" id="comboboxki" style="width: 95px;">
                 <option value="">Kì</option>
               </select>
 
-              <!-- Combo box Năm -->
-              <select class="selectop" id="NamHoc">
+              <select class="form-select" id="NamHoc" style="width: 145px;">
                 <option value="">Chọn năm học</option>
               </select>
-              <select class="selectop" id="departmentFilter">
+
+              <select class="form-select" id="departmentFilter" style="width: 145px;">
                 <option value="">Chọn khoa</option>
               </select>
 
-              <!-- Combo box hệ đào tạo -->
-              <select class="selectop" id="heDaoTao" style="width: max-content">
+              <select class="form-select" id="heDaoTao" style="width: 180px;">
                 <option value="ALL">Tất cả hệ đào tạo</option>
               </select>
 
               <button
                 onclick="getDataTable()"
-                class="btn text-nowrap"
+                class="btn btn-primary text-nowrap"
                 id="render"
-                style="margin-top: 17px"
               >
-                Hiển thị
+                <i class="bi bi-search me-1"></i>Hiển thị
               </button>
+
               <button
-                class="btn text-nowrap"
+                class="btn btn-danger text-nowrap"
                 id="xoa-TKB"
-                style="margin-top: 17px"
               >
-                Xóa
+                <i class="bi bi-trash me-1"></i>Xóa
               </button>
+            </div>
+          </div>
+
+          <!-- Dòng tìm kiếm bên dưới bộ lọc -->
+          <div class="d-flex align-items-center gap-2 mt-3 pt-2 border-top">
+            <div class="input-group" style="max-width: 350px;">
+              <span class="input-group-text"><i class="bi bi-search"></i></span>
+              <input
+                type="text"
+                placeholder="Tìm kiếm theo Tên..."
+                class="form-control"
+                id="find-by-class-name"
+              />
             </div>
           </div>
         </div>
 
         <div>
-          <div class="tkb-input-container">
-              <input
-                type="text"
-                placeholder="Tìm kiếm theo Tên..."
-                class="search tkb-input"
-                id="find-by-class-name"
-              />           
-          </div>
-
           <!-- Bảng dữ liệu -->
           <div
             id="table-container"
@@ -323,21 +480,55 @@
               <tbody id="data-table-body"></tbody>
             </table>
           </div>
-          <div id="total-label" style="display: none;">
-            <label>Tổng số tiết Lên Lớp: <span class="value" id="totalLL">0</span></label>
-            <label>Tổng số tiết Quy Chuẩn: <span class="value" id="totalQC">0</span></label>
+          <div class="summary" id="summaryBox" style="display: none;">
+            <button class="summary-toggle" id="btnToggleSummary" title="Ẩn/Hiện tổng kết">
+              <i class="bi bi-chevron-down"></i>
+            </button>
+            <div class="summary-box">
+              <div class="label"><i class="bi bi-people text-primary me-2"></i> Tổng giảng viên</div>
+              <div class="value" id="totalTeachers">0</div>
+            </div>
+            <div class="summary-box">
+              <div class="label"><i class="bi bi-book text-primary me-2"></i> Tổng lớp học phần</div>
+              <div class="value" id="totalCourses">0</div>
+            </div>
+            <div class="summary-box">
+              <div class="label"><i class="bi bi-calendar-check text-info me-2"></i> Tổng số tiết Lên lớp</div>
+              <div class="value text-primary" id="totalLL">0.00</div>
+            </div>
+            <div class="summary-box">
+              <div class="label"><i class="bi bi-clock-history text-success me-2"></i> Tổng tiết Quy chuẩn</div>
+              <div class="value text-success" id="totalQC">0.00</div>
+            </div>
           </div>
-          <div style="margin-top: 20px">
+          <div class="qc-action-btns mt-3 d-flex gap-2 align-items-center flex-wrap">
             <button
-              class="btn text-nowrap"
+              class="btn btn-outline-primary"
               id="add-row-btn"
               onclick="addNewRow()"
             >
-              Thêm dòng mới
+              <i class="bi bi-plus-lg me-1"></i>Thêm dòng mới
             </button>
-            <button class="btn text-nowrap" id="export-file-btn">
-              Xuất file excel quy chuẩn
-            </button>
+            <div class="dropdown position-relative d-inline-block">
+              <button class="btn btn-outline-success text-nowrap" id="export-file-btn">
+                <i class="bi bi-file-earmark-excel me-1"></i>Xuất file excel quy chuẩn
+              </button>
+              <!-- Menu dropdown ẩn và hiện ra khi click vào nút -->
+              <div
+                id="file-format-menu"
+                class="dropdown-menu"
+                aria-labelledby="export-file-btn"
+                style="display: none;"
+              >
+                <!-- <button class="dropdown-item" onclick="exportToPDF()">PDF</button> -->
+                <button class="dropdown-item" onclick="exportSingleWorksheet()">
+                  <i class="bi bi-file-earmark-spreadsheet me-2"></i>1 worksheet
+                </button>
+                <button class="dropdown-item" onclick="exportMultipleWorksheet()">
+                  <i class="bi bi-file-earmark-spreadsheet-fill me-2"></i>Nhiều worksheet
+                </button>
+              </div>
+            </div>
           </div>
           <div
             id="overlay"
@@ -352,22 +543,6 @@
               z-index: 999;
             "
           ></div>
-
-          <!-- Menu dropdown ẩn và hiện ra khi click vào nút -->
-          <div
-            id="file-format-menu"
-            class="dropdown-menu"
-            aria-labelledby="export-file-btn"
-            style="display: none; position: absolute"
-          >
-            <!-- <button class="dropdown-item" onclick="exportToPDF()">PDF</button> -->
-            <button class="dropdown-item" onclick="exportSingleWorksheet()">
-              1 worksheet
-            </button>
-            <button class="dropdown-item" onclick="exportMultipleWorksheet()">
-              Nhiều worksheet
-            </button>
-          </div>
         </div>
 
         <div id="action-modal" style="display: none">
@@ -627,13 +802,27 @@
 
           const data = await response.json();
           
-          // 4. Update global data variable
-          renderData = data; 
+          // 4. Update global data variable (Chuẩn hóa Unicode NFC cho toàn bộ dữ liệu string)
+          renderData = (Array.isArray(data) ? data : []).map(item => {
+            const row = { ...item };
+            for (const key in row) {
+              if (typeof row[key] === "string") {
+                row[key] = row[key].normalize("NFC");
+              }
+            }
+            return row;
+          });
 
           // 5. SMART UPDATE: Check if Grid exists
           if (gridApi) {
             // If grid exists, just swap the data inside (No flicker)
             gridApi.setRowData(renderData);
+
+            // Tự động áp dụng lại bộ lọc nếu ô tìm kiếm đang có nội dung
+            const searchInput = document.getElementById("find-by-class-name");
+            if (searchInput && searchInput.value) {
+              gridApi.setQuickFilter(searchInput.value.normalize("NFC").trim());
+            }
 
             // Handle Empty State
             if (renderData.length === 0) {
@@ -665,25 +854,64 @@
       function calculateTotals() {
         let totalLL = 0;
         const qcValues = [];
+        const teachersSet = new Set();
+        let totalCourses = 0;
 
         if (gridApi) {
           // Tính tổng dựa trên lưới hiển thị (đã bao gồm filter search nếu có)
           gridApi.forEachNodeAfterFilter((node) => {
-            totalLL += parseFloat(node.data.ll_total) || 0;
-            qcValues.push(node.data.qc);
+            if (node.data) {
+              totalCourses++;
+              totalLL += parseFloat(node.data.ll_total) || 0;
+              qcValues.push(node.data.qc);
+              const gv = (node.data.lecturer || "").trim();
+              if (gv) teachersSet.add(gv);
+            }
           });
         } else if (renderData) {
+          totalCourses = renderData.length;
           totalLL = renderData.reduce((sum, item) => sum + (parseFloat(item.ll_total) || 0), 0);
           qcValues.push(...renderData.map((item) => item.qc));
+          renderData.forEach(item => {
+            const gv = (item.lecturer || "").trim();
+            if (gv) teachersSet.add(gv);
+          });
         }
 
-        const labelTotal = document.getElementById("total-label");
-        if (labelTotal) {
-          document.getElementById('totalLL').textContent = totalLL.toFixed(2);
-          document.getElementById('totalQC').textContent = qcDisplay.sum(qcValues);
-          labelTotal.style.display = "block";
+        const summaryBox = document.getElementById("summaryBox");
+        if (summaryBox) {
+          if (totalCourses === 0) {
+            summaryBox.style.display = "none";
+            return;
+          }
+          const totalTeachersEl = document.getElementById("totalTeachers");
+          const totalCoursesEl = document.getElementById("totalCourses");
+          const totalLLEl = document.getElementById("totalLL");
+          const totalQCEl = document.getElementById("totalQC");
+
+          if (totalTeachersEl) totalTeachersEl.textContent = teachersSet.size;
+          if (totalCoursesEl) totalCoursesEl.textContent = totalCourses;
+          if (totalLLEl) totalLLEl.textContent = totalLL.toFixed(2);
+          if (totalQCEl) totalQCEl.textContent = typeof qcDisplay !== "undefined" ? qcDisplay.sum(qcValues) : qcValues.reduce((s, v) => s + (parseFloat(v) || 0), 0).toFixed(2);
+          summaryBox.style.display = "flex";
         }
       }
+
+      // Toggle ẩn/hiện summary box
+      document.addEventListener("DOMContentLoaded", () => {
+        const btnToggleSummary = document.getElementById("btnToggleSummary");
+        const summaryBox = document.getElementById("summaryBox");
+        if (btnToggleSummary && summaryBox) {
+          btnToggleSummary.addEventListener("click", () => {
+            summaryBox.classList.toggle("collapsed");
+            const icon = btnToggleSummary.querySelector("i");
+            if (icon) {
+              icon.classList.toggle("bi-chevron-down");
+              icon.classList.toggle("bi-chevron-up");
+            }
+          });
+        }
+      });
 
       function renderTable() {
         const role = localStorage.getItem("userRole");
@@ -759,6 +987,11 @@
               || key === 'dot' || key === 'ki_hoc' || key === 'nam_hoc' || key === 'note', // Ẩn cột không cần thiết
               headerClass: "custom-header",
               filter: false,
+
+              getQuickFilterText: (params) => {
+                const val = params.value;
+                return val != null ? String(val).normalize("NFC") : "";
+              },
 
               valueGetter: (params) => {
                 const field = params.colDef.field;
@@ -862,6 +1095,8 @@
           };
           heDaoTaoCol.valueFormatter = (params) =>
             heDaoTaoMap[params.value] || "";
+          heDaoTaoCol.getQuickFilterText = (params) =>
+            (heDaoTaoMap[params.value] || "").normalize("NFC");
         }
 
         columnDefs.push({
@@ -1003,6 +1238,10 @@
           onGridReady: (params) => {
               gridApi = params.api; // Assign to global variable
               params.api.sizeColumnsToFit(); // Resize columns
+              const searchInput = document.getElementById("find-by-class-name");
+              if (searchInput && searchInput.value) {
+                  gridApi.setQuickFilter(searchInput.value.normalize("NFC").trim());
+              }
           },
           // Optional: Templates for empty states
           overlayNoRowsTemplate: '<span style="padding: 10px;">Không có dữ liệu</span>',
@@ -1012,13 +1251,27 @@
         tableContainer.innerHTML = ""; // Xóa nội dung cũ trước khi tạo bảng mới
         new agGrid.Grid(tableContainer, gridOptions);
 
-        // ✅ THÊM ĐOẠN NÀY: Xử lý tìm kiếm Global từ bên ngoài
+        // ✅ Xử lý tìm kiếm Global từ bên ngoài và bắt sự kiện Enter
         const searchInput = document.getElementById("find-by-class-name");
-        if (searchInput) {
-            searchInput.addEventListener("input", function (e) {
+        if (searchInput && !searchInput.dataset.listenerAttached) {
+            searchInput.dataset.listenerAttached = "true";
+
+            const applyFilter = () => {
                 if (gridApi) {
-                    // Tính năng tìm kiếm nhanh trên toàn bộ dữ liệu đang hiển thị
-                    gridApi.setQuickFilter(e.target.value); 
+                    const query = (searchInput.value || "").normalize("NFC").trim();
+                    gridApi.setQuickFilter(query);
+                }
+            };
+
+            searchInput.addEventListener("input", applyFilter);
+            searchInput.addEventListener("keydown", function (e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    if (gridApi) {
+                        applyFilter();
+                    } else {
+                        getDataTable();
+                    }
                 }
             });
         }
