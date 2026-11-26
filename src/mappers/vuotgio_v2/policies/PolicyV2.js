@@ -2,7 +2,7 @@ const base = require("../base.mapper");
 
 class OvertimePolicyV2 {
     calculate(params) {
-        let {
+        const {
             soTietGiangDay = 0,
             soTietNgoaiQC = 0,
             soTietKTHP = 0,
@@ -15,18 +15,15 @@ class OvertimePolicyV2 {
         } = params;
 
         const tongThucHien = soTietGiangDay + soTietNgoaiQC + soTietKTHP + soTietDoAn + soTietHDTQ;
-        
+
         let mienGiam = 0;
         let dinhMucSauMienGiam = dinhMucChuan;
 
-        // V2 Rule: If there is any % exemption (>0), standard quota becomes 80% of 280
+        // V2 Rule: If there is any % exemption (>0), required quota becomes 80% of standard quota (20% reduction)
         if (Number(phanTramMienGiam) > 0) {
-            dinhMucChuan = 280 * 0.8; // 224
-            dinhMucSauMienGiam = dinhMucChuan;
-            // Record mienGiam for reporting purposes (280 - 224)
-            mienGiam = 280 - dinhMucChuan; 
+            dinhMucSauMienGiam = dinhMucChuan * 0.8;
+            mienGiam = dinhMucChuan - dinhMucSauMienGiam;
         } else {
-            // Normal fallback if 0%
             mienGiam = dinhMucChuan * (Number(phanTramMienGiam) / 100);
             dinhMucSauMienGiam = dinhMucChuan - mienGiam;
         }
