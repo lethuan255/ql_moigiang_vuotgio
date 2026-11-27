@@ -2,9 +2,11 @@
  * VUOT GIO V2 - Consolidated Export Service (Type B: Tổng hợp Khoa/Phòng)
  *
  * Cấu trúc file xuất:
- *   1. Các Sheet Khoa/Phòng (36 cột): chi tiết từng đơn vị
- *   2. Sheet TỔNG HỢP (Master): danh sách tất cả khoa, liên kết dữ liệu
- *   3. Sheet TIỀN THANH TOÁN (Payment): bảng kê chuyển khoản toàn trường
+ *   1. Sheet "Bảng kê chứng từ chi tiêu" (Mẫu số CQ05-HD)
+ *   2. Sheet "Bảng kê chứng từ" (Kinh phí theo hệ đào tạo)
+ *   3. Các Sheet Khoa/Phòng (36 cột): chi tiết từng đơn vị
+ *   4. Sheet TỔNG HỢP (Master): danh sách tất cả khoa, liên kết dữ liệu
+ *   5. Sheet TIỀN THANH TOÁN (Payment): bảng kê chuyển khoản toàn trường
  *
  * Folder: src/services/vuotgio_v2/department_excel/  (ConsolidatedGenerator)
  */

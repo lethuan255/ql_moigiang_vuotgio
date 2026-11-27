@@ -23,8 +23,8 @@ class DepartmentGenerator {
    * @param {string}  opts.namHoc
    * @param {boolean} [opts.isExport=false] - true → write Excel formulas; false → static values
    */
-  static createDepartmentSheet(workbook, { khoa, maKhoa, summaries, namHoc, isExport = false }) {
-    const sheetName = WorkbookFactory.sanitizeWorksheetName(khoa || maKhoa || "Khác", "PreviewKhoa");
+  static createDepartmentSheet(workbook, { khoa, maKhoa, sheetName: customSheetName, summaries, namHoc, isExport = false }) {
+    const sheetName = customSheetName || WorkbookFactory.sanitizeWorksheetName(khoa || maKhoa || "Khác", "PreviewKhoa");
     const worksheet = WorkbookFactory.createWorksheet(workbook, sheetName, {
       frozenRows: 5,
       pageSetup: {
@@ -59,9 +59,12 @@ class DepartmentGenerator {
 
     return {
       sheet: worksheet,
+      sheetName: worksheet.name,
+      totalRow: result.totalRow,
       totalThanhToan: result.totalThanhToan,
       totalVuot: result.totalVuot,
-      dataRowCount: result.dataRowCount
+      dataRowCount: result.dataRowCount,
+      moneyTotals: result.moneyTotals
     };
   }
 

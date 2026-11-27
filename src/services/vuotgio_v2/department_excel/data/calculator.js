@@ -29,6 +29,75 @@ class PaymentCalculator {
   }
 
   /**
+   * Convert a monetary amount (in VND) to Vietnamese words.
+   * Uses standard Vietnamese reading ("ngàn", "không trăm", "lẻ", "mốt", "lăm")
+   * and rounds fractional VND to the nearest integer dong.
+   *
+   * @param {number} amount
+   * @returns {string}
+   */
+  static numberToWordsVi(amount) {
+    const rounded = Math.round(Number(amount) || 0);
+    if (rounded === 0) return "Không đồng";
+
+    const isNegative = rounded < 0;
+    let remaining = Math.abs(rounded);
+
+    const digits = ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
+    const scaleUnits = ["", "ngàn", "triệu", "tỷ", "ngàn tỷ", "triệu tỷ"];
+
+    const readThreeDigits = (num, hasHigherGroup) => {
+      const hundreds = Math.floor(num / 100);
+      const tens = Math.floor((num % 100) / 10);
+      const ones = num % 10;
+      const parts = [];
+
+      if (hundreds > 0 || hasHigherGroup) {
+        parts.push(`${digits[hundreds]} trăm`);
+      }
+
+      if (tens === 0) {
+        if (ones > 0) {
+          if (hundreds > 0 || hasHigherGroup) {
+            parts.push("lẻ");
+          }
+          parts.push(digits[ones]);
+        }
+      } else if (tens === 1) {
+        parts.push("mười");
+        if (ones === 5) parts.push("lăm");
+        else if (ones > 0) parts.push(digits[ones]);
+      } else {
+        parts.push(`${digits[tens]} mươi`);
+        if (ones === 1) parts.push("mốt");
+        else if (ones === 5) parts.push("lăm");
+        else if (ones > 0) parts.push(digits[ones]);
+      }
+
+      return parts.join(" ");
+    };
+
+    const chunks = [];
+    while (remaining > 0) {
+      chunks.push(remaining % 1000);
+      remaining = Math.floor(remaining / 1000);
+    }
+
+    const groupTexts = [];
+    for (let i = chunks.length - 1; i >= 0; i -= 1) {
+      const chunk = chunks[i];
+      if (chunk === 0) continue;
+      const hasHigherGroup = i < chunks.length - 1;
+      const chunkText = readThreeDigits(chunk, hasHigherGroup);
+      const unit = scaleUnits[i] || "";
+      groupTexts.push(unit ? `${chunkText} ${unit}` : chunkText);
+    }
+
+    const sentence = `${isNegative ? "âm " : ""}${groupTexts.join(" ")} đồng`;
+    return sentence.charAt(0).toUpperCase() + sentence.slice(1);
+  }
+
+  /**
    * Classify training system (hệ đào tạo)
    */
   static classifyHeDaoTao(tenHeDaoTao) {

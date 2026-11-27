@@ -111,10 +111,12 @@ const exportExcel = async (req, res) => {
  * Query params:
  *   - namHoc (required)
  *
- * File xuất ra gồm 3 loại sheet:
- *   1. Các sheet Khoa/Phòng (36 cột)
- *   2. Sheet TỔNG HỢP
- *   3. Sheet TIỀN THANH TOÁN
+ * File xuất ra gồm 5 loại sheet:
+ *   1. Sheet "Bảng kê chứng từ chi tiêu" (Mẫu số CQ05-HD)
+ *   2. Sheet "Bảng kê chứng từ" (Kinh phí theo hệ đào tạo)
+ *   3. Các sheet Khoa/Phòng (36 cột)
+ *   4. Sheet TỔNG HỢP
+ *   5. Sheet TIỀN THANH TOÁN
  */
 const exportConsolidated = async (req, res) => {
     const { namHoc } = req.query;

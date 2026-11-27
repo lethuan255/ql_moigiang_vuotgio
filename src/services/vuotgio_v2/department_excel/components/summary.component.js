@@ -262,9 +262,18 @@ class SummaryComponent {
 
     return {
       nextRow: currentRow + 1,
+      totalRow: currentRow,
       totalThanhToan: totals.tien_tong,
       totalVuot: totals.vuot_tong,
-      dataRowCount: (summaries || []).length
+      dataRowCount: (summaries || []).length,
+      moneyTotals: {
+        vn: PaymentCalculator.excelNumber(totals.tien_vn),
+        lao: PaymentCalculator.excelNumber(totals.tien_lao),
+        cuba: PaymentCalculator.excelNumber(totals.tien_cuba),
+        cpc: PaymentCalculator.excelNumber(totals.tien_cpc),
+        dongHP: PaymentCalculator.excelNumber(totals.tien_dongHP),
+        total: PaymentCalculator.excelNumber(totals.tien_tong),
+      },
     };
   }
 

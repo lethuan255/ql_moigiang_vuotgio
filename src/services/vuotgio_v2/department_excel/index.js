@@ -5,7 +5,8 @@
  *
  * Generators:
  *   - DepartmentGenerator    → One sheet per khoa (36-column detail table)
- *   - ConsolidatedGenerator  → Full multi-sheet workbook (Dept + Master + Payment)
+ *   - ConsolidatedGenerator  → Full multi-sheet workbook (Voucher + Dept + Master + Payment)
+ *   - VoucherGenerator       → First 2 sheets ("Bảng kê chứng từ chi tiêu", "Bảng kê chứng từ")
  *   - MasterSheetGenerator   → "TỔNG HỢP" sheet mirroring tongHopGV.ejs
  *   - PaymentGenerator       → "Tiền chuyển khoản" sheet (bank transfer list)
  *
@@ -23,6 +24,7 @@ module.exports = {
     // Generators
     DepartmentGenerator  : require('./generators/department.generator'),
     ConsolidatedGenerator: require('./generators/consolidated.generator'),
+    VoucherGenerator     : require('./generators/voucher.generator'),
     MasterSheetGenerator : require('./generators/master.generator'),
     PaymentGenerator     : require('./generators/payment.generator'),
     FormulaGenerator     : require('./generators/formula.generator'),

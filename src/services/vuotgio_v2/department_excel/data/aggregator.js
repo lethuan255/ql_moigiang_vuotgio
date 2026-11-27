@@ -39,6 +39,7 @@ class DataAggregator {
                     tongThucHien : 0,
                     totalVuot    : 0,
                     totalThanhToan: 0,
+                    moneyTotals  : { vn: 0, lao: 0, cuba: 0, cpc: 0, dongHP: 0, total: 0 },
                     dataRowCount : 0,
                 });
             }
@@ -50,8 +51,26 @@ class DataAggregator {
             const bd = sdo.breakdown || PaymentCalculator.computeSdoBreakdown(sdo.tableF, sdo.thanhToan, sdo.luong);
             const tien = bd.thucNhan ?? bd.money?.total ?? PaymentCalculator.calculatePaymentAmount(sdo.thanhToan || 0, sdo.luong || 0);
             group.totalThanhToan += tien;
+            group.moneyTotals.vn     += (bd.money?.vn     || 0);
+            group.moneyTotals.lao    += (bd.money?.lao    || 0);
+            group.moneyTotals.cuba   += (bd.money?.cuba   || 0);
+            group.moneyTotals.cpc    += (bd.money?.cpc    || 0);
+            group.moneyTotals.dongHP += (bd.money?.dongHP || 0);
+            group.moneyTotals.total  += (bd.money?.total  ?? tien);
             group.dataRowCount  += 1;
         });
+
+        // Normalize aggregated money totals to avoid IEEE-754 floating point drift
+        for (const group of groupMap.values()) {
+            group.moneyTotals = {
+                vn    : PaymentCalculator.excelNumber(group.moneyTotals.vn),
+                lao   : PaymentCalculator.excelNumber(group.moneyTotals.lao),
+                cuba  : PaymentCalculator.excelNumber(group.moneyTotals.cuba),
+                cpc   : PaymentCalculator.excelNumber(group.moneyTotals.cpc),
+                dongHP: PaymentCalculator.excelNumber(group.moneyTotals.dongHP),
+                total : PaymentCalculator.excelNumber(group.moneyTotals.total),
+            };
+        }
 
         // Sort: Khoa groups alphabetically first, non-Khoa last
         return Array.from(groupMap.values()).sort((a, b) => {
